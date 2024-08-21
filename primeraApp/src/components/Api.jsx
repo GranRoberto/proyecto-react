@@ -1,42 +1,50 @@
-import ReactWeather, { useOpenWeather } from 'react-open-weather';
+import { useState } from 'react';
+import axios from 'axios';
 
-export default function App () {
-  const { data, isLoading, errorMessage } = useOpenWeather({
-    key: '9ef4723b5943f72f6b3f216e27adb13a',
-    lat: '48.137154',
-    lon: '11.576124',
-    lang: 'en',
-    unit: 'metric', // values are (metric, standard, imperial)
-  });
-  const customStyles = {
-    fontFamily:  'Helvetica, sans-serif',
-    gradientStart:  '#0181C2',
-    gradientMid:  '#04A7F9',
-    gradientEnd:  '#4BC4F7',
-    locationFontColor:  '#FFF',
-    todayTempFontColor:  '#FFF',
-    todayDateFontColor:  '#B5DEF4',
-    todayRangeFontColor:  '#B5DEF4',
-    todayDescFontColor:  '#B5DEF4',
-    todayInfoFontColor:  '#B5DEF4',
-    todayIconColor:  '#FFF',
-    forecastBackgroundColor:  '#FFF',
-    forecastSeparatorColor:  '#DDD',
-    forecastDateColor:  '#777',
-    forecastDescColor:  '#777',
-    forecastRangeColor:  '#777',
-    forecastIconColor:  '#4BC4F7',
+export default function WeatherForm () {
+  const [city, setCity] = useState('');
+  const [country, setCountry] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const apiKey = '9ef4723b5943f72f6b3f216e27adb13a';
+      const response = await axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${apiKey}`
+      );
+
+      if (response.status === 200) {
+        const data = response.data;
+        console.log(data); // Aquí puedes manejar la respuesta de la API
+      } else {
+        console.error('Error al obtener datos del clima');
+      }
+    } catch (error) {
+      console.error('Error al obtener datos del clima:', error);
+    }
   };
+
+    //  9ef4723b5943f72f6b3f216e27adb13a
+
   return (
-    <ReactWeather
-      theme={customStyles}
-      isLoading={isLoading}
-      errorMessage={errorMessage}
-      data={data}
-      lang="en"
-      locationLabel="Munich"
-      unitsLabels={{ temperature: 'C', windSpeed: 'Km/h' }}
-      showForecast
-    />
+    <div>
+      <h2>Consulta el Clima</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Ciudad"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="País"
+          value={country}
+          onChange={(e) => setCountry(e.target.value)}
+        />
+        <button type="submit">Consultar</button>
+      </form>
+    </div>
   );
 };
+
