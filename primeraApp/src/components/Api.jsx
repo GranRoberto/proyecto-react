@@ -3,14 +3,13 @@ import axios from 'axios';
 
 export default function WeatherForm () {
   const [city, setCity] = useState('');
-  const [country, setCountry] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const apiKey = '9ef4723b5943f72f6b3f216e27adb13a';
       const response = await axios.get(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${apiKey}`
+        `http://api.weatherapi.com/v1/q=${city}key=${apiKey}lang=es`
       );
 
       if (response.status === 200) {
@@ -35,12 +34,6 @@ export default function WeatherForm () {
           placeholder="Ciudad"
           value={city}
           onChange={(e) => setCity(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="País"
-          value={country}
-          onChange={(e) => setCountry(e.target.value)}
         />
         <button type="submit">Consultar</button>
       </form>
