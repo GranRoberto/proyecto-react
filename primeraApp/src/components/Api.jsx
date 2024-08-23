@@ -1,35 +1,50 @@
-const getIp = async () => {
-  const response = await fetch("https://api64.ipify.org?format=json");
-  const data = await response.json();
-  return data.ip;
-};
+import { useState } from 'react';
 
-const API_KEY = '2d263dcce14a4477a04233346242108';
-const API_URL = "https://api.weatherapi.com/v1";
+const WeatherForm = () => {
+  const [city, setCity] = useState('');
+  const [weatherData, setWeatherData] = useState(null); // Estado para almacenar los datos del clima
 
-const getWeather = async (city) => {
-  const response = await fetch(
-    `${API_URL}/forecast.json?key=${API_KEY}&q=${city}&days=2&aqi=yes&alerts=no`
+  const getWeather = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        'http://api.weatherapi.com/v1/current.json?key=1868821f7d8444de9f1154458240407&q=${city}&lang=es'
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setWeatherData(data);
+      } else {
+        throw Error("La respuesta no fue exitosa");
+      }
+    } catch (error) {
+      console.error('Error al obtener datos del clima:', error);
+    }
+  };
+
+  return (
+    <div>
+      <h2>Consulta el Clima</h2>
+      <form onSubmit={getWeather}>
+        <input
+          type="text"
+          placeholder="Ciudad"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+        />
+        <button type="submit">Consultar</button>
+      </form>
+
+      {weatherData && ( // Si hay datos del clima, muestra la información
+        <div>
+          <h3>Información del Clima:</h3>
+          <p>Temperatura: {weatherData.current.temp_c} K</p>
+          <p>Descripción: {weatherData.current.condition.text}</p>
+          {/* Puedes agregar más detalles aquí */}
+        </div>
+      )}
+    </div>
   );
-  const data = await response.json();
-  return data;
 };
 
-const getCity = async () => {
-  const ipAdress = await getIp();
-  const response = await fetch(
-    `${API_URL}/ip.json?key=${API_KEY}&q=${ipAdress}`
-  );
-  const data = await response.json();
-  return data.city;
-};
-
-const getAutoComplete = async (search) => {
-  const response = await fetch(
-    `${API_URL}/search.json?key=${API_KEY}&q=${search}&language=en`
-  );
-  const data = await response.json();
-  return data;
-};
-
-export { getWeather, getCity, getAutoComplete };
+export default WeatherForm;
