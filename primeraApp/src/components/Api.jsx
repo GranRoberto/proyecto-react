@@ -1,43 +1,35 @@
-import { useState } from 'react';
-import axios from 'axios';
-
-export default function WeatherForm () {
-  const [city, setCity] = useState('');
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const apiKey = '9ef4723b5943f72f6b3f216e27adb13a';
-      const response = await axios.get(
-        `http://api.weatherapi.com/v1/q=${city}key=${apiKey}lang=es`
-      );
-
-      if (response.status === 200) {
-        const data = response.data;
-        console.log(data); // Aquí puedes manejar la respuesta de la API
-      } else {
-        console.error('Error al obtener datos del clima');
-      }
-    } catch (error) {
-      console.error('Error al obtener datos del clima:', error);
-    }
-  };
-
-    //  9ef4723b5943f72f6b3f216e27adb13a
-
-  return (
-    <div>
-      <h2>Consulta el Clima</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Ciudad"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-        />
-        <button type="submit">Consultar</button>
-      </form>
-    </div>
-  );
+const getIp = async () => {
+  const response = await fetch("https://api64.ipify.org?format=json");
+  const data = await response.json();
+  return data.ip;
 };
 
+const API_KEY = '2d263dcce14a4477a04233346242108';
+const API_URL = "https://api.weatherapi.com/v1";
+
+const getWeather = async (city) => {
+  const response = await fetch(
+    `${API_URL}/forecast.json?key=${API_KEY}&q=${city}&days=2&aqi=yes&alerts=no`
+  );
+  const data = await response.json();
+  return data;
+};
+
+const getCity = async () => {
+  const ipAdress = await getIp();
+  const response = await fetch(
+    `${API_URL}/ip.json?key=${API_KEY}&q=${ipAdress}`
+  );
+  const data = await response.json();
+  return data.city;
+};
+
+const getAutoComplete = async (search) => {
+  const response = await fetch(
+    `${API_URL}/search.json?key=${API_KEY}&q=${search}&language=en`
+  );
+  const data = await response.json();
+  return data;
+};
+
+export { getWeather, getCity, getAutoComplete };

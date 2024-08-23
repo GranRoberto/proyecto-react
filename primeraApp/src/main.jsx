@@ -1,12 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import WeatherForm from './components/Api'
-
+import App from "././pages/App";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <WeatherForm>
-
-    </WeatherForm>
+    <App />
   </StrictMode>,
 )
