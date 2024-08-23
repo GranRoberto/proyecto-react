@@ -4,8 +4,7 @@ const WeatherForm = () => {
   const [city, setCity] = useState('');
   const [weatherData, setWeatherData] = useState(null); // Estado para almacenar los datos del clima
 
-  const getWeather = async (e) => {
-    e.preventDefault();
+  const getWeather = async () => {
     try {
       const response = await fetch(
         'http://api.weatherapi.com/v1/current.json?key=1868821f7d8444de9f1154458240407&q=${city}&lang=es'
@@ -30,17 +29,16 @@ const WeatherForm = () => {
           type="text"
           placeholder="Ciudad"
           value={city}
-          onChange={(e) => setCity(e.target.value)}
+          onChange={(data) => setCity(data.target.value)}
         />
         <button type="submit">Consultar</button>
       </form>
 
-      {weatherData && ( // Si hay datos del clima, muestra la información
+      {weatherData && (
         <div>
           <h3>Información del Clima:</h3>
           <p>Temperatura: {weatherData.current.temp_c} K</p>
           <p>Descripción: {weatherData.current.condition.text}</p>
-          {/* Puedes agregar más detalles aquí */}
         </div>
       )}
     </div>
