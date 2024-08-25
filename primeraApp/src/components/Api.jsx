@@ -6,16 +6,16 @@ const WeatherForm = () => {
 
   const getWeather = async () => {
     try {
-      const response = await fetch(
-        'http://api.weatherapi.com/v1/current.json?key=1868821f7d8444de9f1154458240407&q=${city}&lang=es'
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setWeatherData(data);
-      } else {
-        throw Error("La respuesta no fue exitosa");
-      }
+      await fetch(
+        `http://api.weatherapi.com/v1/current.json?key=1868821f7d8444de9f1154458240407&q=${city}&aqi=no`
+      ).then((res) => {
+        setWeatherData(res)
+        console.log(res, city);
+      }).catch(
+        (error) => {
+          console.error("Error en la petición:", error)
+        }
+      )
     } catch (error) {
       console.error('Error al obtener datos del clima:', error);
     }
@@ -24,23 +24,17 @@ const WeatherForm = () => {
   return (
     <div>
       <h2>Consulta el Clima</h2>
-      <form onSubmit={getWeather}>
+      <div>
         <input
           type="text"
           placeholder="Ciudad"
           value={city}
           onChange={(data) => setCity(data.target.value)}
         />
-        <button type="submit">Consultar</button>
-      </form>
+        <button onClick={getWeather} type="submit">Consultar</button>
+      </div>
 
-      {weatherData && (
-        <div>
-          <h3>Información del Clima:</h3>
-          <p>Temperatura: {weatherData.current.temp_c} K</p>
-          <p>Descripción: {weatherData.current.condition.text}</p>
-        </div>
-      )}
+
     </div>
   );
 };
