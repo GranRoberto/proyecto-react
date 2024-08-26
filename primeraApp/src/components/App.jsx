@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { ThemeContext } from "../context/themeContext";
 
 const Weather = () => {
   const [city, setCity] = useState('');
   const [weatherData, setWeatherData] = useState(null);
-
+  const { darkMode,  } = useContext(ThemeContext);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -14,6 +16,8 @@ const Weather = () => {
       if (response.ok) {
         const data = await response.json();
         setWeatherData(data);
+        localStorage.setItem('weatherData', JSON.stringify(data));
+        console.log(data);
       } else {
         console.error('Error al obtener datos del clima:', response.statusText);
       }
@@ -23,23 +27,25 @@ const Weather = () => {
   };
 
   return (
-    <div>
-      <h2>Consulta el Clima</h2>
-      <form onSubmit={handleSubmit}>
+    <div className={`${darkMode ? "bg-slate-600" : "bg-blue-600"} bg-gray-100 p-4 rounded-lg shadow-md`}>
+      <h2 className="text-xl font-semibold mb-4">Consulta el Clima</h2>
+      <form onSubmit={handleSubmit} className="space-y-2">
         <input
           type="text"
           placeholder="Ciudad"
           value={city}
           onChange={(e) => setCity(e.target.value)}
+          className="p-2 border rounded-md w-full"
         />
       </form>
 
       {weatherData && (
-        <div>
-          <h3>Información del Clima:</h3>
+        <div className="mt-4">
+          <h3 className="text-lg font-semibold">Información del Clima:</h3>
           <p>Temperatura: {weatherData.main.temp}° C</p>
+          <p>Temperatura Mínima: {weatherData.main.temp_min}° C</p>
+          <p>Temperatura Máxima: {weatherData.main.temp_max}° C</p>
           <p>Descripción: {weatherData.weather[0].description}</p>
-          <img src="{weatherData.icon}" alt="" />
         </div>
       )}
     </div>
