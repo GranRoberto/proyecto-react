@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { ThemeContext } from "../context/themeContext";
+import { useState , useContext} from 'react';
+import { ThemeContext , } from "../context/ThemeContext";
 
 const Weather = () => {
   const [city, setCity] = useState('');
   const [weatherData, setWeatherData] = useState(null);
-  const { darkMode,  } = useContext(ThemeContext);
-  
-  const handleSubmit = async (e) => {
+  const { darkMode } = useContext(ThemeContext);
+
+  const weatherSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await fetch(
@@ -19,17 +19,17 @@ const Weather = () => {
         localStorage.setItem('weatherData', JSON.stringify(data));
         console.log(data);
       } else {
-        console.error('Error al obtener datos del clima:', response.statusText);
+        alert ('Error al obtener datos del clima:', response.statusText);
       }
     } catch (error) {
-      console.error('Error al obtener datos del clima:', error);
+      alert ('Error al obtener datos del clima:', error);
     }
   };
 
   return (
-    <div className={`${darkMode ? "bg-slate-600" : "bg-blue-600"} bg-gray-100 p-4 rounded-lg shadow-md`}>
-      <h2 className="text-xl font-semibold mb-4">Consulta el Clima</h2>
-      <form onSubmit={handleSubmit} className="space-y-2">
+    <div className={`${darkMode ? "bg-blue-800" : "bg-blue-300"} p-4 rounded-lg shadow-md m-4`}>
+      <h2 className={`${darkMode ? "text-white" : "text-black"} text-xl font-semibold mb-4`}>Consulta el Clima</h2>
+      <form onSubmit={weatherSubmit} className="">
         <input
           type="text"
           placeholder="Ciudad"
@@ -41,11 +41,12 @@ const Weather = () => {
 
       {weatherData && (
         <div className="mt-4">
-          <h3 className="text-lg font-semibold">Información del Clima:</h3>
-          <p>Temperatura: {weatherData.main.temp}° C</p>
-          <p>Temperatura Mínima: {weatherData.main.temp_min}° C</p>
-          <p>Temperatura Máxima: {weatherData.main.temp_max}° C</p>
-          <p>Descripción: {weatherData.weather[0].description}</p>
+          <h3 className={`${darkMode ? "text-white" : "text-black"} text-lg font-semibold mb-4`}>{weatherData.name}</h3>
+          <h2 className={`${darkMode ? "text-white" : "text-black"} text-lg font-semibold mb-4`}>Información del Clima:</h2>
+          <p className={`${darkMode ? "text-white" : "text-black"}`}>Temperatura: {weatherData.main.temp}° C</p>
+          <p className={`${darkMode ? "text-white" : "text-black"}`}>Temperatura Mínima: {weatherData.main.temp_min}° C</p>
+          <p className={`${darkMode ? "text-white" : "text-black"}`}>Temperatura Máxima: {weatherData.main.temp_max}° C</p>
+          <p className={`${darkMode ? "text-white" : "text-black"}`}>Descripción: {weatherData.weather[0].description}</p>
         </div>
       )}
     </div>
@@ -53,3 +54,23 @@ const Weather = () => {
 };
 
 export default Weather;
+
+/* axios
+
+  useEffect(() => {
+    axios
+      .get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=8ac595f7af9be1b51b1a8942f01b7806&units=metric`
+      )
+      .then((response) => {
+        setWeather(response.data);
+      })
+      .catch(() => {
+        alert("City not found");
+      });
+  }, [city]);
+
+  if (!weather) {
+    return <div>Loading...</div>;
+  }
+*/
